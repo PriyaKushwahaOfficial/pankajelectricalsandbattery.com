@@ -1,20 +1,25 @@
-/* Update your contact details here */
 const SITE_CONFIG = {
   phone: "+917011891843",
   phoneDisplay: "+91 70118 91843",
   whatsapp: "917011891843",
-  email: "info@pankajelectricalsandbattery.com",
+  email: "pankaj9810776115@pankajelectricalsandbattery.com",
   address: "Shop No. 345, GF, Shakti Khand I, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
-  gbpUrl: "https://www.google.com/maps/place/Pankaj+Electricals+and+Electrician+services/@28.647373,77.3599948,17z/data=!3m1!4b1!4m6!3m5!1s0x390cfab0a101d15f:0xde86f8678eadf18c!8m2!3d28.647373!4d77.3625697!16s%2Fg%2F11f39rkvvg?entry=ttu",
-  formAction: "https://formsubmit.co/info@pankajelectricalsandbattery.com"
+  gbpUrl: "https://www.google.com/maps/place/Pankaj+Electricals+and+Electrician+services/@28.647373,77.3599948,17z/data=!4m8!3m7!1s0x390cfab0a101d15f:0xde86f8678eadf18c!8m2!3d28.647373!4d77.3625697!9m1!1b1!16s%2Fg%2F11f39rkvvg?entry=ttu",
+  gbpReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJ1R3RAoEDDTkR2G-o2G6G7t4",
+  googleRating: "4.9",
+  googleReviewCount: "236",
+  formAction: "https://formsubmit.co/pankaj9810776115@pankajelectricalsandbattery.com",
+  mapsEmbedSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.8476647797586!2d77.3599948!3d28.647373!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfab0a101d15f%3A0xde86f8678eadf18c!2sPankaj%20Electricals%20and%20Electrician%20services!5e0!3m2!1sen!2sin!4v1721721600000!5m2!1sen!2sin"
 };
 
 document.addEventListener("DOMContentLoaded", function () {
   applySiteConfig();
   initMobileNav();
-  initHeroSlider();
   initContactForm();
   initProductSearch();
+  initContactFormSent();
+  initLazyEmbeds();
+  initGoogleReviewsWidget();
 });
 
 function applySiteConfig() {
@@ -37,6 +42,18 @@ function applySiteConfig() {
     }
   });
 
+  document.querySelectorAll("[data-gbp]").forEach(function (el) {
+    el.setAttribute("href", SITE_CONFIG.gbpUrl);
+  });
+
+  document.querySelectorAll("[data-rating]").forEach(function (el) {
+    el.textContent = SITE_CONFIG.googleRating;
+  });
+
+  document.querySelectorAll("[data-review-count]").forEach(function (el) {
+    el.textContent = SITE_CONFIG.googleReviewCount + "+";
+  });
+
   var form = document.getElementById("contact-form");
   if (form && SITE_CONFIG.formAction) {
     form.setAttribute("action", SITE_CONFIG.formAction);
@@ -50,66 +67,40 @@ function applySiteConfig() {
 function initMobileNav() {
   var toggle = document.getElementById("mobile-toggle");
   var navbar = document.getElementById("navbar");
-
   if (!toggle || !navbar) return;
 
   toggle.addEventListener("click", function () {
     var isOpen = navbar.classList.toggle("open");
     toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    toggle.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+    toggle.innerHTML = isOpen
+      ? '<svg class="icon" aria-hidden="true"><use href="#icon-times"></use></svg>'
+      : '<svg class="icon" aria-hidden="true"><use href="#icon-bars"></use></svg>';
   });
 
   navbar.querySelectorAll("a").forEach(function (link) {
     link.addEventListener("click", function () {
       navbar.classList.remove("open");
       toggle.setAttribute("aria-expanded", "false");
-      toggle.innerHTML = '<i class="fas fa-bars"></i>';
+      toggle.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#icon-bars"></use></svg>';
     });
   });
 }
 
-function initHeroSlider() {
-  var slides = document.querySelectorAll(".hero-slide");
-  var dots = document.querySelectorAll(".hero-dot");
-  if (!slides.length) return;
-
-  var index = 0;
-  var timer;
-
-  function showSlide(i) {
-    slides.forEach(function (slide, idx) {
-      slide.classList.toggle("active", idx === i);
-    });
-    dots.forEach(function (dot, idx) {
-      dot.classList.toggle("active", idx === i);
-    });
-    index = i;
-  }
-
-  function nextSlide() {
-    showSlide((index + 1) % slides.length);
-  }
-
-  showSlide(0);
-  timer = setInterval(nextSlide, 5000);
-
-  dots.forEach(function (dot, idx) {
-    dot.addEventListener("click", function () {
-      clearInterval(timer);
-      showSlide(idx);
-      timer = setInterval(nextSlide, 5000);
-    });
-  });
+function initContactFormSent() {
+  if (new URLSearchParams(window.location.search).get("sent") !== "1") return;
+  var status = document.getElementById("form-status");
+  if (!status) return;
+  status.textContent = "Thank you! Your message has been sent. We will call you shortly.";
+  status.className = "form-status success";
 }
 
 function initContactForm() {
   var form = document.getElementById("contact-form");
   if (!form) return;
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", function () {
     var status = document.getElementById("form-status");
     if (!form.checkValidity()) return;
-
     if (status) {
       status.textContent = "Sending your message…";
       status.className = "form-status";
@@ -134,21 +125,16 @@ function initProductSearch() {
 
     var visible = 0;
     cards.forEach(function (card) {
-      var text = card.textContent.toLowerCase();
-      var match = text.indexOf(query) !== -1;
+      var match = card.textContent.toLowerCase().indexOf(query) !== -1;
       card.style.display = match ? "" : "none";
       if (match) visible++;
     });
 
     var noResults = document.getElementById("no-results");
-    if (noResults) {
-      noResults.hidden = visible > 0;
-    }
+    if (noResults) noResults.hidden = visible > 0;
   }
 
-  if (searchBtn) {
-    searchBtn.addEventListener("click", runSearch);
-  }
+  if (searchBtn) searchBtn.addEventListener("click", runSearch);
 
   searchBox.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
@@ -161,10 +147,67 @@ function initProductSearch() {
     }
   });
 
-  var params = new URLSearchParams(window.location.search);
-  var q = params.get("q");
+  var q = new URLSearchParams(window.location.search).get("q");
   if (q && searchBox) {
     searchBox.value = q;
     runSearch();
   }
+}
+
+function initLazyEmbeds() {
+  document.querySelectorAll("[data-lazy-embed]").forEach(function (wrap) {
+    var loaded = false;
+
+    function loadEmbed() {
+      if (loaded) return;
+      loaded = true;
+      var iframe = document.createElement("iframe");
+      iframe.src = wrap.getAttribute("data-embed-src") || SITE_CONFIG.mapsEmbedSrc;
+      iframe.title = wrap.getAttribute("data-embed-title") || "Google Maps";
+      iframe.loading = "lazy";
+      iframe.referrerPolicy = "no-referrer-when-downgrade";
+      iframe.setAttribute("allowfullscreen", "");
+      wrap.innerHTML = "";
+      wrap.appendChild(iframe);
+      wrap.classList.add("is-loaded");
+    }
+
+    var facade = wrap.querySelector(".embed-facade");
+    if (facade) {
+      facade.addEventListener("click", loadEmbed);
+    }
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            loadEmbed();
+            observer.disconnect();
+          }
+        });
+      }, { rootMargin: "200px" }).observe(wrap);
+    } else if (facade) {
+      facade.addEventListener("click", loadEmbed);
+    }
+  });
+}
+
+function initGoogleReviewsWidget() {
+  var container = document.getElementById("google-reviews-embed");
+  if (!container || !("IntersectionObserver" in window)) return;
+
+  new IntersectionObserver(function (entries, observer) {
+    if (!entries[0].isIntersecting) return;
+    observer.disconnect();
+
+    var iframe = document.createElement("iframe");
+    iframe.src = SITE_CONFIG.mapsEmbedSrc;
+    iframe.title = "Pankaj Electricals Google Reviews";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer-when-downgrade";
+    iframe.setAttribute("allowfullscreen", "");
+    container.innerHTML = "";
+    container.appendChild(iframe);
+    container.classList.add("is-loaded");
+  }, { rootMargin: "250px" }).observe(container);
 }
