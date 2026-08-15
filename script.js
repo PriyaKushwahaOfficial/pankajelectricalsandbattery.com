@@ -7,7 +7,7 @@ const SITE_CONFIG = {
   gbpUrl: "https://www.google.com/maps/place/Pankaj+Electricals+and+Electrician+services/@28.647373,77.3599948,17z/data=!4m8!3m7!1s0x390cfab0a101d15f:0xde86f8678eadf18c!8m2!3d28.647373!4d77.3625697!9m1!1b1!16s%2Fg%2F11f39rkvvg?entry=ttu",
   gbpReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJ1R3RAoEDDTkR2G-o2G6G7t4",
   googleRating: "4.9",
-  googleReviewCount: "240",
+  googleReviewCount: "241",
   formAction: "https://formsubmit.co/pankaj9810776115@pankajelectricalsandbattery.com",
   mapsEmbedSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.8476647797586!2d77.3599948!3d28.647373!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfab0a101d15f%3A0xde86f8678eadf18c!2sPankaj%20Electricals%20and%20Electrician%20services!5e0!3m2!1sen!2sin!4v1721721600000!5m2!1sen!2sin"
 };
